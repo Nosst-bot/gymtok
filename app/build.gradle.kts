@@ -105,6 +105,8 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.6.1")
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
+    //Imagenes
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
 
 
