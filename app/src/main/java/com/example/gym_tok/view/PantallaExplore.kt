@@ -19,5 +19,8 @@ fun PantallaExplorar(){
         Text(text = "Explorar gimnasios")
         Spacer(Modifier.height(8.dp))
         Button(onClick = { /*TODO*/ }) { Text("Buscar Gimnasios") }
+
+
+
     }
 }
