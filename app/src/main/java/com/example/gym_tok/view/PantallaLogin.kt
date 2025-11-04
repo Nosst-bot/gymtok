@@ -29,9 +29,7 @@ import androidx.navigation.compose.rememberNavController
 
 
 /*
-    ¿Que entradas necesito?
-    ¿Que acciones necesito?
-    ¿Que regla minima?
+
 
  */
 @Composable
@@ -70,6 +68,7 @@ fun PantallaLogin(navController: NavController, ) {
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
+        // Iniciar Sesion
         Button(
             onClick = {navController.navigate("home")},
             modifier = Modifier.fillMaxWidth()

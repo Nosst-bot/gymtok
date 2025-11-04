@@ -16,9 +16,13 @@ fun AppNavHost() {
         startDestination = "login"
     ){
         composable("login"){ PantallaLogin(navController) }
-        composable("home"){ PantallaHome()}
         //Register
-        composable("register"){ FormularioRegistro(navController) }
+        composable("register"){ FormularioRegistro(navController)}
 
-}
+        composable("home"){ PantallaHome(
+            onCerrarSesion = {
+                navController.navigate("login"){popUpTo("home"){inclusive = true} }
+            }
+        )}
+    }
 }
