@@ -1,6 +1,7 @@
 package com.example.gym_tok.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,54 +40,57 @@ fun PantallaLogin(navController: NavController, ) {
     var email by rememberSaveable() { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-            .imePadding(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {//Titulo de la pantalla
-        Text(
-            text = "Iniciar Sesión",
-            style = MaterialTheme.typography.headlineSmall
-        )
-        // Campo: email
-        TextField(
-            value = email,
-            onValueChange = {email = it},
-            label = {Text("Email")},
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        // Campo: Password
-        TextField(
-        value = password,
-            onValueChange = {password = it},
-            label = {Text("Contraseña")},
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        // Iniciar Sesion
-        Button(
-            onClick = {navController.navigate("home")},
-            modifier = Modifier.fillMaxWidth()
+        .fillMaxSize()
+        .padding(16.dp),
+        contentAlignment = Alignment.Center
 
-        ) {
-            Text("Iniciar Sesión")
+    ){
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+
+        ) {//Titulo de la pantalla
+            Text(
+                text = "Iniciar Sesión",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            // Campo: email
+            TextField(
+                value = email,
+                onValueChange = {email = it},
+                label = {Text("Email")},
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            // Campo: Password
+            TextField(
+                value = password,
+                onValueChange = {password = it},
+                label = {Text("Contraseña")},
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+            // Iniciar Sesion
+            Button(
+                onClick = {navController.navigate("home")},
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Iniciar Sesión")
+            }
+            TextButton(
+                onClick = { navController.navigate("register") },
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Text("Registrarse")
+            }
         }
-
-        TextButton(
-            onClick = { navController.navigate("register") },
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Text("Registrarse")
-        }
-
-
-
     }
 }
 

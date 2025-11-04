@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 fun PantallaSocial(){
     Column(
         Modifier.fillMaxSize().padding(16.dp)){
-        Text(text = "Explorar ubicaciones gimnacios por comuna, productos")
+        Text(text = "Social Media feed, publicaciones")
         Spacer(Modifier.height(8.dp))
-        Button(onClick = { /*demo*/ }) { Text("Buscar demo") }
+        Button(onClick = { /*demo*/ }) { Text("Publicar Imagen") }
     }
 }

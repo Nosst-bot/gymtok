@@ -1,6 +1,7 @@
 package com.example.gym_tok.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,63 +41,79 @@ fun FormularioRegistro(navController: NavController){
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-            .imePadding(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ){
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    )
 
-        //Titulo de la pantalla
-        Text(
-            text = "Crear Cuenta",
-            style = MaterialTheme.typography.headlineSmall
-        )
-        // Campo: Nombre
-        TextField(
-            value = name,
-            onValueChange = {name = it},
-            label = {Text("Nombre")},
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        // Campo: Correo
-        TextField(
-            value = email,
-            onValueChange = {email = it},
-            label = {Text("Email")},
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = {Text("Contraseña")},
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Button(
-            onClick = {navController.navigate("login")
+    {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
 
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Registrar")
+        ){
+
+            //Titulo de la pantalla
+            Text(
+                text = "Crear Cuenta",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            // Campo: Nombre
+            TextField(
+                value = name,
+                onValueChange = {name = it},
+                label = {Text("Nombre")},
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            // Campo: Correo
+            TextField(
+                value = email,
+                onValueChange = {email = it},
+                label = {Text("Email")},
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = {Text("Contraseña")},
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Button(
+                onClick = {navController.navigate("login")
+
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Registrar")
+            }
+
+            Button(
+                onClick = {navController.navigate("login")
+
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Salir")
+            }
         }
     }
-
-
-
-    }
+}
 

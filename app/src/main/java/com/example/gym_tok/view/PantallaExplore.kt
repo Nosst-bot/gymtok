@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 fun PantallaExplorar(){
     Column(
         Modifier.fillMaxSize().padding(16.dp)){
-        Text(text = "Social Media feed, publicaciones")
+        Text(text = "Explorar gimnasios")
         Spacer(Modifier.height(8.dp))
-        Button(onClick = { /*TODO*/ }) { Text("Publicar") }
+        Button(onClick = { /*TODO*/ }) { Text("Buscar Gimnasios") }
     }
 }
