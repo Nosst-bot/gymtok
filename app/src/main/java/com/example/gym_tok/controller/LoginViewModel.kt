@@ -1,11 +1,13 @@
 package com.example.gym_tok.controller
 
 import android.app.Application
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.gym_tok.api.ApiService
+import com.example.gym_tok.db.AppDatabase
 import com.example.gym_tok.model.User
+import com.example.gym_tok.repository.UsuarioLocalRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,8 +24,9 @@ data class LoginUiState(
     val usuarioLogeado: User? = null
 )
 
-class LoginViewModel(): ViewModel() {
+class LoginViewModel(application: Application): AndroidViewModel(application) {
     private val api: ApiService by lazy { RetrofitProvider.create<ApiService>() }
+    private val localRepository = UsuarioLocalRepository(AppDatabase.get(application))
     private val _state = MutableStateFlow(LoginUiState());
     val state: StateFlow<LoginUiState> = _state.asStateFlow();
 
@@ -51,14 +54,25 @@ class LoginViewModel(): ViewModel() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
             try {
-                val user = api.login(email, pass)
+                // First, try to log in against the local database
+                var user = localRepository.login(email, pass)
+
+                // If not found locally, try remote API
+                if (user == null) {
+                    val remoteUser = api.login(email, pass)
+                    if(remoteUser != null) {
+                        // If login is successful, save user to local DB and then log in
+                        val localUser = remoteUser.toUsuarioLocal()
+                        localRepository.insert(localUser)
+                        user = localRepository.login(email, pass)
+                    }
+                }
+
                 if (user != null) {
                     delay(2000)
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            usuarioLogeado = user,
-                            password = user.password
                         )
                     }
                     nav.navigate("home")
@@ -73,7 +87,4 @@ class LoginViewModel(): ViewModel() {
             }
         }
     }
-
-
-
 }
