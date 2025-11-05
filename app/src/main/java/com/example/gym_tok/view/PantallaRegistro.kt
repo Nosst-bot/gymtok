@@ -240,14 +240,23 @@ fun FormularioRegistro(navController: NavController, viewModel: RegistroViewMode
                         containerColor = Color.Red,
                         labelColor = MaterialTheme.colorScheme.onPrimary,
                         trailingIconColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = "Localized description",
-                            Modifier.size(InputChipDefaults.AvatarSize)
-                        )
+                    )
+                )
+            }
+
+            ui.successMessage?.let {
+                InputChip(
+                    onClick = {
+
                     },
+                    modifier = Modifier.fillMaxWidth().height(55.dp),
+                    label = { Text(it, fontSize = 18.sp) },
+                    selected = false,
+                    colors = InputChipDefaults.inputChipColors(
+                        containerColor = Color.Green,
+                        labelColor = MaterialTheme.colorScheme.onPrimary,
+                        trailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                    )
                 )
             }
 

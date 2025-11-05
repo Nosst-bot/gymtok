@@ -23,6 +23,7 @@ data class RegistroUiState(
     val sex: Char = 'M',
     val isSaving: Boolean = false,
     val errorMessage: String? = null,
+    val successMessage: String? = null,
     val registradoOk: Boolean = false
 )
 
@@ -67,20 +68,28 @@ class RegistroViewModel(): ViewModel() {
 
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true, errorMessage = null, registradoOk = false) }
-            delay(3000)
+
             try {
                 val nuevoUser = User(name = name, email = email, lastName = lastName, password = pass, birthDate = birthDate, userName = userName, sex = sex)
-                api.register(nuevoUser)
 
-                _state.update {
-                    it.copy(
-                        isSaving = false,
-                        registradoOk = true,
-                        password = "",
-                    )
+                println(nuevoUser)
+                val response = api.register(nuevoUser)
+
+                println(response)
+
+                if (response.isSuccessful) {
+                    _state.update { it.copy(isSaving = false, registradoOk = true, successMessage = "Registrado con éxito !") }
+                    delay(2000)
+                    nav.navigate("login")
+                } else if (response.code() == 409) {
+                    _state.update { it.copy(isSaving = false, errorMessage = "El correo ya está registrado") }
+                } else {
+                    _state.update { it.copy(isSaving = false, errorMessage = "Error desconocido (${response.code()})") }
                 }
+
             } catch (e: Exception) {
-                _state.update { it.copy(isSaving = false, errorMessage = e.message ?: "Error al registrar") }
+                println(e)
+                _state.update { it.copy(isSaving = false, errorMessage = "Error de red o servidor") }
             }
         }
     }
