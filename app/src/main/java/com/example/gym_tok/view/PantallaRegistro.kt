@@ -187,8 +187,9 @@ fun FormularioRegistro(navController: NavController){
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
-                onClick = {navController.navigate("login")
+                onClick = {
 
+                    navController.navigate("login")
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -203,11 +204,6 @@ fun FormularioRegistro(navController: NavController){
             ) {
                 Text("Salir")
             }
-
-
-
-
-
 
         }
     }

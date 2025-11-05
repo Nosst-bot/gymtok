@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)         // PLUGINS BUILD.GRADLE.KTS
 }
 
 android {
@@ -109,7 +110,19 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
 
-
-
-
+    ksp(libs.androidx.room.compiler)                // DEPENDENCIES EN BUILD.GRANDE.KTS
+    implementation(libs.androidx.lifecycle.runtime.ktx)         // DEPENDENCIES EN BUILD.GRANDE.KTS
+    implementation(libs.androidx.lifecycle.viewmodel.compose)   // DEPENDENCIES EN BUILD.GRANDE.KTS
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.room.common.jvm)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    ksp(libs.androidx.room.compiler)                // DEPENDENCIES EN BUILD.GRANDE.KTS
+    implementation(libs.androidx.lifecycle.viewmodel.compose)   // DEPENDENCIES EN BUILD.GRANDE.KTS
+    implementation(libs.androidx.lifecycle.runtime.ktx)         // DEPENDENCIES EN BUILD.GRANDE.KTS
 }
