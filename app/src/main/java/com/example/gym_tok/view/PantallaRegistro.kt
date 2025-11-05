@@ -53,7 +53,7 @@ fun FormularioRegistro(navController: NavController){
     var password by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var fecha_nacimiento by rememberSaveable { mutableStateOf("") }
-    // ▼ Estados para el dropdown “Sexo”
+    // Estados para el dropdown “Sexo”
     val sexOptions = listOf("Masculino", "Femenino")
     var sexo by rememberSaveable { mutableStateOf<String?>(null) } // valor elegido
     var sexoExpanded by remember { mutableStateOf(false) }         // si el menú está abierto
@@ -63,26 +63,22 @@ fun FormularioRegistro(navController: NavController){
             .fillMaxSize()
             .padding(16.dp),
         contentAlignment = Alignment.Center
-    )
-
-    {
+    ){
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-                .imePadding(),
+                .imePadding(), //Empuja el contenido cuando aparece el contenido
+            //Espacidados y Alineacion
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-
         ){
-
             //Titulo de la pantalla
             Text(
                 text = "Crear Cuenta",
                 style = MaterialTheme.typography.headlineSmall
             )
             Row (modifier = Modifier
-                .fillMaxWidth(), // ocupa todo el ancho de la pantalla
+                .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp) // deja espacio entre los campos
             ){
                 // Campo: Nombre
@@ -100,7 +96,7 @@ fun FormularioRegistro(navController: NavController){
                     onValueChange = {lastName = it},
                     label = {Text("Apellido")},
                     singleLine = true,
-                    modifier = Modifier.weight(1f) //
+                    modifier = Modifier.weight(1f)
                 )
             }
             // Campo: Correo

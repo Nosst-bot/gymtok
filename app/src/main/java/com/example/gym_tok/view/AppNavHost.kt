@@ -1,11 +1,9 @@
 package com.example.gym_tok.view
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 
 @Composable
 fun AppNavHost() {
@@ -16,13 +14,17 @@ fun AppNavHost() {
         startDestination = "login"
     ){
         composable("login"){ PantallaLogin(navController) }
-        //Register
+
         composable("register"){ FormularioRegistro(navController)}
 
-        composable("home"){ PantallaHome(
+        composable("home"){ PantallaHome(navController) }
+
+        composable("perfil"){PantallaPerfilUsuario(
             onCerrarSesion = {
-                navController.navigate("login"){popUpTo("home"){inclusive = true} }
-            }
+                navController.navigate("login"){popUpTo(0) }
+            },
+            onVolver = {navController.popBackStack()}
         )}
+
     }
 }

@@ -54,21 +54,11 @@ import androidx.compose.material.icons.filled.Image
 @Composable
 fun PantallaSocial(){
 
-    //Column = apila elementos en vertical.
-    // Aqui usaremos dos grandes bloques:
-    // 1 el Composer (caja para escribir tomar / foto / publicar)
-    // 2 La lista de posts (solo visual por ahora)
     Column(
         modifier = Modifier
-            .fillMaxSize()  // La pantalla ocupa todo el alto/ancho disponible
-            .padding(16.dp) // margen general para que el contenido respire
+            .fillMaxSize()
+            .padding(16.dp)
     ){
-
-        //  Composer arriba
-        /*
-            Por ahora solo dibujamos el componente.
-            Las funciones onPickImage / onPublish quedan como TODO para agregar logica mas adelante
-         */
         PostComposer(
             onPickImage = {/*  */},
             onPublish = {/*  */}
@@ -76,12 +66,8 @@ fun PantallaSocial(){
 
         // Separadores visuales para que la pantalla no se vea apretada
         Spacer(Modifier.height(12.dp))
-        Divider() // Linea sutil para separar el "composer" de la lista
+        Divider()
         Spacer(Modifier.height(12.dp))
-
-        // 2) Lista de posts (demo con datos ficticios)
-        // Para prototipo, puedes usar una lista fija o vacia.
-        // Mas adelante, reemplaa esto con datos reales desde ViewModel/Repos.
 
         val demoPosts = remember {
             listOf(
