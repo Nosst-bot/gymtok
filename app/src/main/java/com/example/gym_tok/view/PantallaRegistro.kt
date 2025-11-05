@@ -301,6 +301,7 @@ fun DatePickerFieldToModal(modifier: Modifier = Modifier, viewModel: RegistroVie
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
