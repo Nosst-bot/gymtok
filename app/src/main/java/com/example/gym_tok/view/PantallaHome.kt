@@ -47,7 +47,7 @@ fun PantallaHome(navController: NavController){
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) // linea fina
             ) {
                 TopAppBar(
-                title = { Text("Gym-tok")},
+                title = { Text("Gym Tok")},
                 actions = {
                     IconButton(onClick = {navController.navigate("perfil")}) {
                         Icon(Icons.Default.AccountCircle, contentDescription = "Perfil de Usuario")

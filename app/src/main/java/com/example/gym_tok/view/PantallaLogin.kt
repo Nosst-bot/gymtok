@@ -30,9 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -54,8 +56,8 @@ fun PantallaLogin(navController: NavController, viewModel: LoginViewModel = view
 
     Box(
         modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         contentAlignment = Alignment.Center
 
     ){
@@ -70,13 +72,21 @@ fun PantallaLogin(navController: NavController, viewModel: LoginViewModel = view
         ) {//Titulo de la pantalla
             Icon(
                 imageVector = Icons.Default.FitnessCenter,
-                contentDescription = "Logo",
-                modifier = Modifier.size(100.dp)
+                contentDescription = "Logo de Gym Tok",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(60.dp)
             )
+
             Text(
-                text = "Iniciar Sesión",
-                style = MaterialTheme.typography.headlineSmall
+                text = "Gym Tok",
+                style = MaterialTheme.typography.displayMedium.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 2.sp
+                ),
+                modifier = Modifier.padding(start = 8.dp)
             )
+
+
             // Campo: email
             TextField(
                 value = ui.email,
