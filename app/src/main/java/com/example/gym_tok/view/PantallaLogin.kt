@@ -7,9 +7,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -62,6 +68,11 @@ fun PantallaLogin(navController: NavController, viewModel: LoginViewModel = view
             verticalArrangement = Arrangement.spacedBy(12.dp)
 
         ) {//Titulo de la pantalla
+            Icon(
+                imageVector = Icons.Default.FitnessCenter,
+                contentDescription = "Logo",
+                modifier = Modifier.size(100.dp)
+            )
             Text(
                 text = "Iniciar Sesión",
                 style = MaterialTheme.typography.headlineSmall
