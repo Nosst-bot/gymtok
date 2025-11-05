@@ -11,8 +11,8 @@ import retrofit2.http.POST
 
 interface ApiService {
     @Headers("Content-Type: application/json")
-    @POST("user")
-    suspend fun crearUsuario(@Body body: User)
+    @POST("user/register")
+    suspend fun register(@Body body: User): User?
 
     @GET("gym")
     suspend fun obtenerGym(): List<Gym>

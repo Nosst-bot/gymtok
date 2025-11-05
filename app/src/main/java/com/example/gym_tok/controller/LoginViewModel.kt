@@ -43,9 +43,6 @@ class LoginViewModel(): ViewModel() {
         val email = state.value.email.trim()
         val pass = state.value.password
 
-        println(email)
-        println(pass)
-
         if (email.isEmpty() || pass.isEmpty()) {
             _state.update { it.copy(errorMessage = "Ingresa email y contraseña") }
             return
@@ -56,8 +53,6 @@ class LoginViewModel(): ViewModel() {
             try {
                 val user = api.login(email, pass)
                 if (user != null) {
-                    println("LINEUSER")
-                    println(user)
                     delay(2000)
                     _state.update {
                         it.copy(
