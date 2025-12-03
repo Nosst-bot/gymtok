@@ -1,95 +1,106 @@
 package com.example.gym_tok.view
 
+import android.app.Application
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.example.gym_tok.controller.SocialViewModel
+import com.example.gym_tok.controller.SocialViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaHome(navController: NavController){
-        var tab by remember { mutableStateOf("social") }
+fun PantallaHome(navController: NavController) {
+    var selectedRoute by remember { mutableStateOf("social") }
+
+    val context = LocalContext.current
+    val factory = SocialViewModelFactory(context.applicationContext as Application)
+    val socialViewModel: SocialViewModel = viewModel(factory = factory)
+
+    // --- INICIO DE LA LÓGICA DE AUTO-REFRESCO ---
+
+    // 1. Observamos la entrada actual en la pila de navegación.
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    // 2. Este efecto se ejecuta cada vez que esta pantalla (PantallaHome) vuelve a estar visible.
+    LaunchedEffect(navBackStackEntry) {
+        // 3. Verificamos si la "señal" `post_created` fue dejada por la pantalla anterior.
+        val postCreated = navBackStackEntry?.savedStateHandle?.get<Boolean>("post_created")
+        if (postCreated == true) {
+            // 4. Si la señal existe, le decimos al ViewModel que recargue la lista de posts.
+            socialViewModel.loadPosts()
+            // 5. Limpiamos la señal para que no se recargue de nuevo si solo rotamos la pantalla.
+            navBackStackEntry?.savedStateHandle?.remove<Boolean>("post_created")
+        }
+    }
+    // --- FIN DE LA LÓGICA DE AUTO-REFRESCO ---
+
     Scaffold(
         topBar = {
             Surface(
-                shadowElevation = 4.dp, //Genera sombra
-                tonalElevation = 4.dp, // da mas sensacion de profundidad
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) // linea fina
+                shadowElevation = 4.dp,
+                tonalElevation = 4.dp,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
                 TopAppBar(
-                title = { Text("Gym Tok")},
-                actions = {
-                    IconButton(onClick = {navController.navigate("perfil")}) {
-                        Icon(Icons.Default.AccountCircle, contentDescription = "Perfil de Usuario")
-                    }
+                    title = { Text("Gym Tok") },
+                    actions = {
+                        IconButton(onClick = { navController.navigate("perfil") }) {
+                            Icon(Icons.Default.AccountCircle, contentDescription = "Perfil de Usuario")
+                        }
                     }
                 )
             }
         },
-
-        bottomBar = {
-            Surface(
-                shadowElevation = 8.dp,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        floatingActionButton = {
+            if(selectedRoute == "social")
+            FloatingActionButton(
+                onClick = { navController.navigate("create_post") }
             ) {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surface  // color base
-                ) {
-                    NavigationBarItem(
-                        selected = false,
-                        onClick = { tab = "social" },
-                        icon = {Icon(Icons.Default.Home, contentDescription = "Inicio")},
-                        label = { Text("Inicio") }
-                    )
-                    NavigationBarItem(
-                        selected = false,
-                        onClick = { tab= "explore" },
-                        icon = {Icon(Icons.Default.Search, contentDescription = "Explorar")},
-                        label = { Text("Buscar Gimnasios") }
-                    )
-                }
+                Icon(Icons.Default.Add, contentDescription = "Crear Post")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        bottomBar = {
+            BottomAppBar {
+                NavigationBarItem(
+                    selected = selectedRoute == "social",
+                    onClick = { selectedRoute = "social" },
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
+                    label = { Text("Inicio") }
+                )
+                NavigationBarItem(
+                    selected = selectedRoute == "explore",
+                    onClick = { selectedRoute = "explore" },
+                    icon = { Icon(Icons.Default.Search, contentDescription = "Explorar") },
+                    label = { Text("Explorar") }
+                )
             }
         }
     ) { innerPadding ->
-
         Box(
             Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-    ){
-            when(tab){
+        ) {
+            when (selectedRoute) {
                 "explore" -> PantallaExplorar()
-                else        -> PantallaSocial()
+                else -> PantallaSocial(navController = navController, viewModel = socialViewModel)
             }
         }
     }

@@ -2,10 +2,10 @@ package com.example.gym_tok.controller
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.example.gym_tok.api.ApiService
+import com.example.gym_tok.model.RegisterRequest
 import com.example.gym_tok.model.User
-import kotlinx.coroutines.delay
+import com.example.gym_tok.network.RetrofitProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+// Clase simple que representa toda lo que la pantalla de login puede mostrar
 data class RegistroUiState(
     val email: String = "",
     val password: String = "",
@@ -27,9 +28,11 @@ data class RegistroUiState(
     val registradoOk: Boolean = false
 )
 
+// Esta es la clase principal
 class RegistroViewModel(): ViewModel() {
+// Dentro de la clase se mantendra toda la logica y el estado.
+    private val api: ApiService = RetrofitProvider.api
 
-    private val api: ApiService by lazy { RetrofitProvider.create<ApiService>() }
 
     private val _state = MutableStateFlow(RegistroUiState())
     val state: StateFlow<RegistroUiState> = _state.asStateFlow()
@@ -43,7 +46,7 @@ class RegistroViewModel(): ViewModel() {
     fun onBirthDateChange(v: String) = _state.update { it.copy(birthDate = v, errorMessage = null) }
     fun limpiarError() = _state.update { it.copy(errorMessage = null) }
 
-    fun register(nav: NavController) {
+    fun register() {
         val email = state.value.email.trim()
         val pass = state.value.password
         val name = state.value.name.trim()
@@ -70,17 +73,15 @@ class RegistroViewModel(): ViewModel() {
             _state.update { it.copy(isSaving = true, errorMessage = null, registradoOk = false) }
 
             try {
-                val nuevoUser = User(name = name, email = email, lastName = lastName, password = pass, birthDate = birthDate, userName = userName, sex = sex)
+                val request = RegisterRequest(name = name, email = email, lastName = lastName, password = pass, birthDate = birthDate, userName = userName, sex = sex)
 
-                println(nuevoUser)
-                val response = api.register(nuevoUser)
+                println(request)
+                val response = api.register(request)
 
                 println(response)
 
                 if (response.isSuccessful) {
                     _state.update { it.copy(isSaving = false, registradoOk = true, successMessage = "Registrado con éxito !") }
-                    delay(2000)
-                    nav.navigate("login")
                 } else if (response.code() == 409) {
                     _state.update { it.copy(isSaving = false, errorMessage = "El correo ya está registrado") }
                 } else {

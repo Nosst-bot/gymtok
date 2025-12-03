@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gym_tok.api.ApiService
 import com.example.gym_tok.model.Gym
+import com.example.gym_tok.network.RetrofitProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +28,11 @@ data class GymPostUiState(
 
 class GymViewModel: ViewModel() {
 
-    private val api: ApiService by lazy { RetrofitProvider.create<ApiService>() }
+
+    // --- CORRECCIÓN 1: OBTENER LA INSTANCIA DE API ---
+    // Ya no se usa un método .create(). RetrofitProvider es un objeto singleton
+    // que expone directamente la instancia de ApiService a través de su propiedad `api`.
+    private val api: ApiService = RetrofitProvider.api
     private val _state = MutableStateFlow(GymPostUiState())
     val state: StateFlow<GymPostUiState> = _state.asStateFlow()
 
@@ -46,10 +51,25 @@ class GymViewModel: ViewModel() {
     fun cargarGyms() {
         viewModelScope.launch {
             _state.update { it.copy(isListLoading = true, listError = null) }
-            flow { emit(api.obtenerGym()) }
-                .onEach { gyms -> _state.update { it.copy(list = gyms, isListLoading = false) } }
-                .catch { e -> _state.update { it.copy(isListLoading = false, listError = e.message) } }
-                .collect()
+            try {
+                // --- CORRECCIÓN 2: LLAMAR AL MÉTODO CORRECTO ---
+                // Se usa `getGyms()` como está definido en la interfaz ApiService.
+                val response = api.getGyms()
+
+                // --- CORRECCIÓN 3: MANEJO DE RESPUESTA ROBUSTO ---
+                // Se verifica si la respuesta de la red fue exitosa (código 2xx).
+                if (response.isSuccessful) {
+                    // Si es exitosa, se actualiza el estado con la lista de gimnasios del body.
+                    // Se usa `?: emptyList()` como salvaguarda por si el body es nulo.
+                    _state.update { it.copy(list = response.body() ?: emptyList(), isListLoading = false) }
+                } else {
+                    // Si la respuesta fue un error (404, 500, etc.), se actualiza el estado con el error.
+                    _state.update { it.copy(isListLoading = false, listError = "Error: ${response.code()}") }
+                }
+            } catch (e: Exception) {
+                // Si ocurre una excepción (ej. no hay conexión a internet), se captura y se muestra el error.
+                _state.update { it.copy(isListLoading = false, listError = e.message) }
+            }
         }
     }
 

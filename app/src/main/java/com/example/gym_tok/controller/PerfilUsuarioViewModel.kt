@@ -3,24 +3,55 @@ package com.example.gym_tok.controller
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.gym_tok.db.AppDatabase
 import com.example.gym_tok.model.UsuarioLocal
+import com.example.gym_tok.repository.UserPreferencesRepository
 import com.example.gym_tok.repository.UsuarioLocalRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class PerfilUsuarioViewModel(application: Application) : AndroidViewModel(application) {
+// El estado de la UI vuelve a tener el expediente completo.
+data class ProfileUiState(
+    val user: UsuarioLocal? = null,
+    val isLoading: Boolean = true,
+    val isLoggedOut: Boolean = false
+)
 
-    private val repository = UsuarioLocalRepository(AppDatabase.get(application))
+class PerfilUsuarioViewModel(
+    application: Application,
+    private val usuarioLocalRepository: UsuarioLocalRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
+) : AndroidViewModel(application) {
 
-    val loggedInUser: StateFlow<UsuarioLocal?> = repository.getLoggedInUser()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            // Usamos flatMapLatest para una cadena reactiva elegante.
+            // 1. Escucha el ID de usuario de DataStore.
+            userPreferencesRepository.userId
+                .flatMapLatest { userId ->
+                    // 2. Si el ID existe, cambia a escuchar el Flow de Room.
+                    if (userId != null) {
+                        usuarioLocalRepository.getUserById(userId)
+                    } else {
+                        // Si no hay ID, emite un flow nulo.
+                        flowOf(null)
+                    }
+                }
+                // 3. Recoge el resultado (el UsuarioLocal de Room) y actualiza la UI.
+                .collect { userFromDb ->
+                    _uiState.update {
+                        it.copy(user = userFromDb, isLoading = false)
+                    }
+                }
+        }
+    }
 
     fun logout() {
         viewModelScope.launch {
-            repository.logout()
+            userPreferencesRepository.clear()
+            _uiState.update { it.copy(isLoggedOut = true) }
         }
     }
 }

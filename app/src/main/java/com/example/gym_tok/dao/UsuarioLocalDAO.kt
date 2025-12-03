@@ -24,4 +24,6 @@ interface UsuarioLocalDAO {
 
     @Query("UPDATE usuarioLocal SET isLoggedIn = 1 WHERE id = :userId")
     suspend fun loginUser(userId: Int)
+    @Query("SELECT * FROM usuarioLocal WHERE id = :id LIMIT 1")
+    fun getUserById(id: Int): Flow<UsuarioLocal?>
 }

@@ -1,12 +1,13 @@
 package com.example.gym_tok.model
 
-// Un "data class" es una clase especial de Kotlin que guarda datos de forma simple.
-// No tiene lógica de negocio, solo almacena la información que la interfaz necesita mostrar.
-
+// Este es el objeto que la UI (la Vista) realmente usa.
 data class UiPost(
-    val id: Int,          // Identificador único del post (sirve como "key" en la lista LazyColumn)
-    val user: String,     // Nombre del usuario que publicó
-    val time: String,     // Cuándo se publicó (ej: "Hace 2h", "Ayer")
-    val text: String? = null, // Texto opcional del post
-    val imageUrl: String? = null // Imagen opcional (por ahora la dejaremos nula)
+    val id: Long,
+    val user: String, // Por ahora será un placeholder
+    val time: String, // El tiempo formateado, ej: "hace 5 min"
+    val text: String?, // La descripción del post
+    val imageUrl: String?, // La URL de la imagen del post
+    // --- CAMPOS AÑADIDOS PARA LIKES ---
+    val likesCount: Int,
+    val isLiked: Boolean
 )

@@ -6,6 +6,13 @@ plugins {
 }
 
 android {
+    packaging{
+        resources{
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/io.netty.versions.properties"
+        }
+    }
     namespace = "com.example.gym_tok"
     compileSdk = 36
 
@@ -51,6 +58,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.foundation)
+    implementation(libs.firebase.appdistribution.gradle)
+
+    implementation("com.google.guava:guava:33.2.1-android")
+    implementation(libs.play.services.fitness)
 
     // Test dependencies
     testImplementation(libs.junit)
