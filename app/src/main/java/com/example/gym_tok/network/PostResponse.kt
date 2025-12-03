@@ -11,7 +11,7 @@ data class PostResponse(
     val id: Long,
 
     @SerializedName("description")
-    val description: String?, // El texto del post
+    val description: String?,
 
     @SerializedName("imageUrl")
     val imageUrl: String?,
@@ -22,7 +22,7 @@ data class PostResponse(
     @SerializedName("userName")
     val userName: String?,
 
-    // --- CAMPOS AÑADIDOS PARA LIKES ---
+
     @SerializedName("likesCount")
     val likesCount: Int?,
 

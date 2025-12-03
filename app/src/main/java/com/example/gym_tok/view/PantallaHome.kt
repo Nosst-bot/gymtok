@@ -47,6 +47,13 @@ fun PantallaHome(navController: NavController) {
             // 5. Limpiamos la señal para que no se recargue de nuevo si solo rotamos la pantalla.
             navBackStackEntry?.savedStateHandle?.remove<Boolean>("post_created")
         }
+        val postEdited = navBackStackEntry?.savedStateHandle?.get<Boolean>("post_edited")
+        if (postEdited == true) {
+            // 7. Si la señal de edición existe, también recargamos los posts.
+            socialViewModel.loadPosts()
+            // 8. Y limpiamos la señal para evitar recargas accidentales.
+            navBackStackEntry?.savedStateHandle?.remove<Boolean>("post_edited")
+        }
     }
     // --- FIN DE LA LÓGICA DE AUTO-REFRESCO ---
 

@@ -1,4 +1,4 @@
-package com.example.gym_tok.model
+package com.example.gym_tok.network
 
 /**
  * Data class representing the JSON body for a login request.

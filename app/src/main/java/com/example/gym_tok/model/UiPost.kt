@@ -7,7 +7,6 @@ data class UiPost(
     val time: String, // El tiempo formateado, ej: "hace 5 min"
     val text: String?, // La descripción del post
     val imageUrl: String?, // La URL de la imagen del post
-    // --- CAMPOS AÑADIDOS PARA LIKES ---
     val likesCount: Int,
     val isLiked: Boolean
 )

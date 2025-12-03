@@ -3,9 +3,9 @@ package com.example.gym_tok.api
 import com.example.gym_tok.DTO.CommentRequest
 import com.example.gym_tok.model.Comment
 import com.example.gym_tok.model.Gym
-import com.example.gym_tok.model.LoginRequest
-import com.example.gym_tok.model.RegisterRequest
-import com.example.gym_tok.model.UserDTO
+import com.example.gym_tok.network.LoginRequest
+import com.example.gym_tok.network.RegisterRequest
+import com.example.gym_tok.network.UserDTO
 import com.example.gym_tok.network.PostResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -24,11 +24,18 @@ import retrofit2.http.Query
 
 interface ApiService {
 
+    companion object {
+        // --- ¡IMPORTANTE! ---
+        // Reemplaza esta IP con la dirección IP local de la máquina
+        // donde corre tu servidor backend.
+        const val BASE_URL = "http://10.0.2.2:8080"
+    }
+
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<UserDTO>
 
     @POST("user/register")
-    suspend fun register(@Body request: RegisterRequest): Response<String>
+    suspend fun register(@Body request: RegisterRequest): Response<Map<String, String>>
 
     @GET("posts")
     suspend fun getPosts(@Query("userId") userId: Int?): Response<List<PostResponse>>

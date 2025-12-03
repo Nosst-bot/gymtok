@@ -92,7 +92,7 @@ fun PostCard(
         tonalElevation = 2.dp,
         shadowElevation = 2.dp
     ) {
-        // Esta es la Column principal. TODO debe ir DENTRO de ella.
+        // Esta es la Column principal
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -146,10 +146,9 @@ fun PostCard(
                         )
                     }
                 }
-            } // Fin de la Row de la cabecera
+            }
 
-            // --- INICIO DE LA CORRECCIÓN ---
-            // El resto del contenido ahora está DENTRO de la Column principal.
+
 
             val hasText = !post.text.isNullOrBlank()
 
@@ -158,7 +157,7 @@ fun PostCard(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Mostramos el texto del post si existe
+
             if (hasText) {
                 Text(text = post.text!!, style = MaterialTheme.typography.bodyLarge)
             }
@@ -167,7 +166,7 @@ fun PostCard(
             if (post.imageUrl != null) {
                 Spacer(modifier = Modifier.height(if (hasText) 12.dp else 0.dp))
                 AsyncImage(
-                    model = "http://10.0.2.2:8080" + post.imageUrl,
+                    model = post.imageUrl,
                     contentDescription = "Imagen del post",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -200,8 +199,8 @@ fun PostCard(
                         Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = "Comentar", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-            } // Fin de la Row de acciones
+            }
 
-        } // <-- ESTE ES EL CORCHETE CORRECTO que cierra la Column principal.
+        }
     }
 }

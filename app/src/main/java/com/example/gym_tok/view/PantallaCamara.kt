@@ -1,7 +1,10 @@
 package com.example.gym_tok.view
 
+import android.Manifest
 import android.content.Context
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -17,15 +20,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Lens
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-// --- ¡CORRECCIÓN! ---
-// Se importa el LifecycleOwner desde su nueva ubicación.
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -38,6 +38,44 @@ import kotlin.coroutines.suspendCoroutine
 
 @Composable
 fun PantallaCamara(
+    onImageCaptured: (Uri) -> Unit,
+    onError: (ImageCaptureException) -> Unit
+) {
+    // 1. ESTADO PARA GUARDAR SI TENEMOS EL PERMISO
+    var hasCamPermission by remember {
+        mutableStateOf(false)
+    }
+
+    // 2. LANZADOR PARA SOLICITAR EL PERMISO
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            hasCamPermission = granted
+        }
+    )
+
+    // 3. EFECTO PARA LANZAR LA SOLICITUD DE PERMISO AL ENTRAR
+    LaunchedEffect(key1 = true) {
+        permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+
+    // 4. LÓGICA CONDICIONAL
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        if (hasCamPermission) {
+            // SI TENEMOS PERMISO, MOSTRAMOS LA CÁMARA
+            CameraView(onImageCaptured, onError)
+        } else {
+            // SI NO TENEMOS PERMISO, MOSTRAMOS UN MENSAJE
+            Text(text = "Se necesita permiso de la cámara para continuar.")
+        }
+    }
+}
+
+@Composable
+private fun CameraView(
     onImageCaptured: (Uri) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
@@ -65,7 +103,7 @@ fun PantallaCamara(
                 imageCapture
             )
         } catch (e: Exception) {
-            // Manejar errores de la cámara
+             onError(ImageCaptureException(e.hashCode(), e.message.toString(), e.cause))
         }
     }
 
@@ -96,6 +134,7 @@ fun PantallaCamara(
         )
     }
 }
+
 
 private fun takePhoto(
     context: Context,

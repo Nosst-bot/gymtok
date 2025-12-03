@@ -2,8 +2,13 @@ package com.example.gym_tok.controller
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.gym_tok.db.AppDatabase
 import com.example.gym_tok.model.* // Importamos todos los modelos necesarios
+import com.example.gym_tok.network.LoginRequest
+import com.example.gym_tok.network.RegisterRequest
 import com.example.gym_tok.network.RetrofitProvider
 import com.example.gym_tok.repository.UserPreferencesRepository
 import com.example.gym_tok.repository.UsuarioLocalRepository
@@ -69,8 +74,8 @@ class FormularioRegistroViewModel(
                                 email = user.email,
                                 birthDate = user.birthDate,
                                 sex = user.sex,
-                                userName = user.userName,
-                                password = user.password
+                                userName = user.userName
+
                             )
                             // 7. Usamos la función correcta 'insert' para guardar en Room.
                             usuarioLocalRepository.insert(usuarioLocal)
@@ -98,5 +103,18 @@ class FormularioRegistroViewModel(
                 }
             }
         }
+    }
+}
+
+class FormularioRegistroViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(FormularioRegistroViewModel::class.java)) {
+            // --- ¡CORRECCIÓN! ---
+            val database = AppDatabase.get(application)
+            val repository = UsuarioLocalRepository(database)
+            return FormularioRegistroViewModel(application, repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

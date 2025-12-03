@@ -57,7 +57,7 @@ class SocialViewModel(
 
     fun onLikeClicked(postId: Long) {
         viewModelScope.launch {
-            // --- ¡CORRECCIÓN! ---
+
             val currentUserId = userPreferencesRepository.userId.firstOrNull()
             if (currentUserId == null) {
                 return@launch

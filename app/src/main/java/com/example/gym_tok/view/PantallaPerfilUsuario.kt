@@ -57,7 +57,7 @@ fun PantallaPerfilUsuario(onCerrarSesion: () -> Unit, onVolver: () -> Unit) {
                 // --- ¡CORREGIDO! Usamos los nombres de propiedad correctos del modelo UsuarioLocal ---
                 val user = uiState.user!!
 
-                Text("Bienvenido, ${user.userName}", style = MaterialTheme.typography.headlineMedium)
+                    Text("Perfil de Usuario, ${user.userName}", style = MaterialTheme.typography.headlineMedium)
                 Spacer(modifier = Modifier.height(24.dp))
                 InfoRow("Nombre:", user.name)
                 InfoRow("Apellido:", user.lastName)
@@ -65,6 +65,7 @@ fun PantallaPerfilUsuario(onCerrarSesion: () -> Unit, onVolver: () -> Unit) {
                 // birthDate es un String, así que lo mostramos directamente
                 InfoRow("Fecha de Nacimiento:", user.birthDate)
                 // La fecha de registro no está en el modelo local, así que la omitimos.
+                InfoRow("Sexo:", if (user.sex == 'M') "Masculino" else "Femenino")
 
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(onClick = { viewModel.logout() }) {

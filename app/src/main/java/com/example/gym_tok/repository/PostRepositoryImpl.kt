@@ -102,18 +102,33 @@ class PostRepositoryImpl(
 
 }
 
-// --- (La función de mapeo no tiene cambios) ---
 fun PostResponse.toUiPost(): UiPost {
     val instant = Instant.parse(this.createdAt)
     val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         .withZone(ZoneId.systemDefault())
+
+    // 1. Verificamos si la URL relativa de la imagen (ej: "/uploads/foto.jpg") existe.
+    val relativeImageUrl = this.imageUrl
+    val fullImageUrl: String? // Esta será la URL completa y final.
+
+    if (relativeImageUrl.isNullOrBlank()) {
+        // 2. Si el post no tiene imagen, la URL final es nula.
+        fullImageUrl = null
+    } else {
+        // 3. Si tiene imagen, construimos la URL completa añadiendo la IP del servidor.
+        fullImageUrl = ApiService.BASE_URL + relativeImageUrl
+    }
+
+    // 4. EL "SOPLÓN": Imprimimos en la consola la URL que la app va a intentar cargar.
+    //    Busca la etiqueta "URL_SOPLON" en el Logcat para ver este mensaje.
+    android.util.Log.d("URL_SOPLON", "Post ID ${this.id}: URL a cargar -> '$fullImageUrl'")
 
     return UiPost(
         id = this.id,
         user = this.userName ?: "Usuario",
         time = formatter.format(instant),
         text = this.description,
-        imageUrl = this.imageUrl,
+        imageUrl = fullImageUrl, // Pasamos la URL completa (o null) a la UI.
         likesCount = this.likesCount ?: 0,
         isLiked = this.isLikedByCurrentUser ?: false
     )

@@ -34,7 +34,12 @@ fun PantallaEditarPost(
     // Efecto para navegar hacia atrás cuando el ViewModel lo indique
     LaunchedEffect(uiState.navigateBack) {
         if (uiState.navigateBack) {
-            // TODO: Necesitamos avisar a la pantalla social que debe refrescarse.
+            // 1. Dejamos una "nota" en la pantalla anterior para que se refresque.
+            navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.set("post_edited", true)
+
+            // 2. Volvemos atrás
             navController.popBackStack()
         }
     }

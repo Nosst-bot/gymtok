@@ -9,22 +9,9 @@ class UsuarioLocalRepository(private val db: AppDatabase) {
 
     suspend fun insert(u: UsuarioLocal) = usuarioLocalDAO.insert(u)
 
-    // --- ¡AQUÍ ESTÁ LA FUNCIÓN QUE FALTABA! ---
-    // Esta función expone la capacidad del DAO de buscar un usuario por su ID.
     fun getUserById(id: Int): Flow<UsuarioLocal?> = usuarioLocalDAO.getUserById(id)
-    // --- FIN DE LA FUNCIÓN AÑADIDA ---
 
     fun getLoggedInUser(): Flow<UsuarioLocal?> = usuarioLocalDAO.getLoggedInUser()
-
-    suspend fun login(email: String, pass: String): UsuarioLocal? {
-        val user = usuarioLocalDAO.getUserByEmail(email)
-        if (user != null && user.password == pass) {
-            usuarioLocalDAO.logoutAll()
-            usuarioLocalDAO.loginUser(user.id as Int)
-            return user
-        }
-        return null
-    }
 
     suspend fun logout() {
         usuarioLocalDAO.logoutAll()

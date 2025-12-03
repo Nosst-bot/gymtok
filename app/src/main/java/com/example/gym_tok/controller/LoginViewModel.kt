@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.gym_tok.api.ApiService
-import com.example.gym_tok.model.LoginRequest
-import com.example.gym_tok.model.UserDTO
+import com.example.gym_tok.db.AppDatabase
+import com.example.gym_tok.model.User
+import com.example.gym_tok.network.LoginRequest
 import com.example.gym_tok.network.RetrofitProvider
 import com.example.gym_tok.repository.UserPreferencesRepository
+import com.example.gym_tok.repository.UsuarioLocalRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,12 +26,12 @@ data class LoginUiState(
     val errorMessage: String? = null
 )
 
-// 1. AÑADIMOS UserPreferencesRepository AL CONSTRUCTOR
 class LoginViewModel(
-    application: Application, // Necesario para el repo
+    application: Application,
     private val apiService: ApiService,
-    private val userPreferencesRepository: UserPreferencesRepository
-) : AndroidViewModel(application) { // 2. CAMBIAMOS A AndroidViewModel
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val usuarioLocalRepository: UsuarioLocalRepository
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -58,12 +60,13 @@ class LoginViewModel(
                 val response = apiService.login(loginRequest)
 
                 if (response.isSuccessful && response.body() != null) {
-                    val user = response.body()!!
+                    val userDto = response.body()!!
 
-                    // --- ¡AQUÍ ESTÁ LA MAGIA! ---
-                    // 3. GUARDAMOS LA SESIÓN DEL USUARIO
-                    userPreferencesRepository.saveUserSession(user)
-                    // ----------------------------
+                    // Acción 1: Guardar la sesión (la "llave")
+                    userPreferencesRepository.saveUserSession(userDto)
+
+                    // Acción 2: Guardar el perfil completo en la base de datos local
+                    usuarioLocalRepository.insert(userDto.toUsuarioLocal())
 
                     _uiState.update {
                         it.copy(
@@ -86,16 +89,17 @@ class LoginViewModel(
     }
 }
 
-// 4. CREAMOS UNA FACTORY PARA CONSTRUIR EL VIEWMODEL CON SUS DEPENDENCIAS
 class LoginViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             val apiService = RetrofitProvider.api
-            // --- CORRECCIÓN AQUÍ ---
-            // Usamos getInstance() para obtener la única instancia compartida
             val userPrefsRepository = UserPreferencesRepository.getInstance(application)
-            return LoginViewModel(application, apiService, userPrefsRepository) as T
+            
+            val database = AppDatabase.get(application)
+            val usuarioLocalRepository = UsuarioLocalRepository(database)
+
+            return LoginViewModel(application, apiService, userPrefsRepository, usuarioLocalRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

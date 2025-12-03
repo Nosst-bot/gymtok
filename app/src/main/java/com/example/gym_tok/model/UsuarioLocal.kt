@@ -13,6 +13,5 @@ data class UsuarioLocal (
     val birthDate: String,
     val sex: Char,
     val userName: String,
-    val password: String,
     val isLoggedIn: Boolean = false
 )

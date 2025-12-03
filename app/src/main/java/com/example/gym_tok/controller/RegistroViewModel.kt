@@ -3,7 +3,7 @@ package com.example.gym_tok.controller
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gym_tok.api.ApiService
-import com.example.gym_tok.model.RegisterRequest
+import com.example.gym_tok.network.RegisterRequest
 import com.example.gym_tok.model.User
 import com.example.gym_tok.network.RetrofitProvider
 import kotlinx.coroutines.flow.MutableStateFlow

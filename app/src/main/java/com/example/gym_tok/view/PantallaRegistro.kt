@@ -117,7 +117,7 @@ fun FormularioRegistro(navController: NavController){
 
             Button(
                 onClick = {
-                    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN FINAL! ---
+
                     if (fechaNacimiento != null && sexo != null) {
                         val user = User(
                             name = nombre,

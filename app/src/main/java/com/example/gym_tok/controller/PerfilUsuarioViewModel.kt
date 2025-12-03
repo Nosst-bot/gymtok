@@ -2,12 +2,17 @@ package com.example.gym_tok.controller
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.gym_tok.db.AppDatabase
 import com.example.gym_tok.model.UsuarioLocal
 import com.example.gym_tok.repository.UserPreferencesRepository
 import com.example.gym_tok.repository.UsuarioLocalRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 
 // El estado de la UI vuelve a tener el expediente completo.
 data class ProfileUiState(
@@ -16,6 +21,7 @@ data class ProfileUiState(
     val isLoggedOut: Boolean = false
 )
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PerfilUsuarioViewModel(
     application: Application,
     private val usuarioLocalRepository: UsuarioLocalRepository,
@@ -53,5 +59,20 @@ class PerfilUsuarioViewModel(
             userPreferencesRepository.clear()
             _uiState.update { it.copy(isLoggedOut = true) }
         }
+    }
+}
+
+class PerfilUsuarioViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(PerfilUsuarioViewModel::class.java)) {
+            val database = AppDatabase.get(application)
+            // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
+            // Le pasamos el objeto 'database' completo, no solo el DAO.
+            val usuarioLocalRepository = UsuarioLocalRepository(database)
+            val userPreferencesRepository = UserPreferencesRepository.getInstance(application)
+            return PerfilUsuarioViewModel(application, usuarioLocalRepository, userPreferencesRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
