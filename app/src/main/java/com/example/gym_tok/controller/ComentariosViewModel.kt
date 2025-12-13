@@ -11,15 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ComentariosViewModel (): ViewModel() {
+class ComentariosViewModel (private val apiService: ApiService): ViewModel() {
 
-    // 2. CORRECCIÓN: Se inicializa la instancia de ApiService
-    private val apiService = RetrofitProvider.api
-
-
-    // --- ESTADOS DE LA UI ---
-
-    // Estado para la lista de comentarios. Es privado para que solo el ViewModel lo modifique.
     private val _comments = MutableStateFlow<List<Comment>>(emptyList())
     // Versión pública y de solo lectura del estado para que la UI lo observe.
     val comments: StateFlow<List<Comment>> = _comments

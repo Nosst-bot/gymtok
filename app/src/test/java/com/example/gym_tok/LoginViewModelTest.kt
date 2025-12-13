@@ -72,7 +72,7 @@ class LoginViewModelTest {
 
         // Assert (Verificar)
         val finalState = viewModel.uiState.value
-        assertTrue("Se simula que es falso", finalState.loginSuccess)
+        assertTrue("Se obtiene un login exitoso", finalState.loginSuccess)
         assertEquals(null, finalState.errorMessage)
 
         // Se verifica que los métodos de guardado fueron llamados con los parámetros correctos.
@@ -81,7 +81,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `dadas credenciales incorrectas, el estado debe ser de error`() = runTest {
+    fun `credenciales incorrectas, el estado debe ser de error`() = runTest {
         // Arrange
         val email = "wrong@test.com"
         val password = "wrongpassword"
@@ -106,7 +106,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `dado un error de red, el estado debe ser de error`() = runTest {
+    fun `un error de red, el estado debe ser de error`() = runTest {
         // Arrange
         val exception = RuntimeException("No se pudo conectar al servidor")
         val expectedErrorMessage = "Error de red: ${exception.message}"
