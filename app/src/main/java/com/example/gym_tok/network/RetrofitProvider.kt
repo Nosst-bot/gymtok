@@ -1,10 +1,12 @@
 package com.example.gym_tok.network
 
 import com.example.gym_tok.api.ApiService // Importación explícita de TU ApiService
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * ===============================================================
@@ -23,6 +25,13 @@ object RetrofitProvider {
     // para conectarse al "localhost" (127.0.0.1) de la máquina donde se está ejecutando.
     // Si tu backend corre en el puerto 8080, esta es la IP correcta para que el emulador lo encuentre.
     private const val BASE_URL = "http://10.0.2.2:8080/"
+
+    // Configuramos el parser de JSON (kotlinx.serialization)
+    // para que sea flexible y no falle si el backend añade campos nuevos.
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
 
     // Creación del cliente OkHttp. OkHttp es la librería que Retrofit usa por debajo
     // para realizar las llamadas HTTP.
@@ -43,9 +52,8 @@ object RetrofitProvider {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient) // Usamos el cliente OkHttp que configuramos arriba.
-            // Le decimos a Retrofit que use GsonConverterFactory para convertir
-            // las respuestas JSON en nuestras data classes de Kotlin.
-            .addConverterFactory(GsonConverterFactory.create())
+            // Le decimos a Retrofit que use el conversor de kotlinx.serialization en lugar del de Gson.
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 

@@ -1,31 +1,33 @@
 package com.example.gym_tok.network
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Representa la estructura de un Post tal como llega desde el backend.
  * Esta es la "plantilla" que usa Retrofit para entender el JSON.
  */
+@Serializable
 data class PostResponse(
-    @SerializedName("id")
+    @SerialName("id")
     val id: Long,
 
-    @SerializedName("description")
+    @SerialName("description")
     val description: String?,
 
-    @SerializedName("imageUrl")
+    @SerialName("imageUrl")
     val imageUrl: String?,
 
-    @SerializedName("createdAt")
+    @SerialName("createdAt")
     val createdAt: String,
 
-    @SerializedName("userName")
+    @SerialName("userName")
     val userName: String?,
 
 
-    @SerializedName("likesCount")
+    @SerialName("likesCount")
     val likesCount: Int?,
 
-    @SerializedName("isLikedByCurrentUser")
+    @SerialName("isLikedByCurrentUser")
     val isLikedByCurrentUser: Boolean?
 )

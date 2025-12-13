@@ -49,8 +49,6 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     // Core and Compose dependencies from libs.versions.toml
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -68,6 +66,9 @@ dependencies {
 
     // Test dependencies
     testImplementation(libs.junit)
+    testImplementation("io.mockk:mockk:1.13.11") // MockK for mocking objects in tests
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0") // For testing coroutines
+    testImplementation("androidx.arch.core:core-testing:2.2.0") // For testing Architecture Components
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -92,13 +93,13 @@ dependencies {
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.7.0")
 
-    // Retrofit & OkHttp for networking
+    // Retrofit & OkHttp for networking (Cleaned up)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:2.11.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    // kotlinx-serialization converter for Retrofit
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // CameraX
     implementation("androidx.camera:camera-core:1.3.4")
@@ -113,4 +114,5 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    testImplementation(kotlin("test"))
 }
